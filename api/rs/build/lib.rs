@@ -58,6 +58,7 @@ use std::path::Path;
 use i_slint_compiler::diagnostics::BuildDiagnostics;
 
 /// The structure for configuring aspects of the compilation of `.slint` markup files to Rust.
+#[derive(Clone)]
 pub struct CompilerConfiguration {
     config: i_slint_compiler::CompilerConfiguration,
 }
@@ -410,6 +411,17 @@ pub fn compile(path: impl AsRef<std::path::Path>) -> Result<(), CompileError> {
 ///     slint_build::CompilerConfiguration::new()
 ///     .with_style("material".into());
 /// slint_build::compile_with_config("ui/hello.slint", config).unwrap();
+/// ```
+///
+/// or for multiple slint modules, use the [`glob`](https://docs.rs/glob/latest/glob/) crate:
+/// ```rust,no_run
+/// use glob::glob;
+/// let config =
+///     slint_build::CompilerConfiguration::new()
+///     .with_style("material".into());
+/// for module in glob("ui/*.slint").expect("Failed to find slint files") {
+///     slint_build::compile_with_config(module.unwrap(), config.clone()).unwrap();
+/// }
 /// ```
 pub fn compile_with_config(
     relative_slint_file_path: impl AsRef<std::path::Path>,
